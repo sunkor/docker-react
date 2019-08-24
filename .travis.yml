@@ -3,6 +3,20 @@ sudo: required
 before_install:
   - "docker build -t sunkor/docker-react -f Dockerfile.dev ."
 script:
-  - "docker run -e CI=true sunkor/docker-react npm run test"
+  - "docker run -e CI=true sunkor/docker-react npm run test -- --coverage"
 services:
   - docker
+
+deploy:
+  provider: elasticbeanstalk
+  region: "ap-southeast-2"
+  app: "docker-react"
+  env: "DockerReact-env"
+  bucket_name: "elasticbeanstalk-ap-southeast-2-068004728410"
+  bucket_path: "docker-react"
+  on:
+    branch: master
+  access_key_id:
+    secure: "$AWS_ACCESS_KEY"
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
